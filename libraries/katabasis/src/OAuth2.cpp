@@ -234,7 +234,7 @@ void OAuth2::link() {
                 }
                 if(foundPort == 0) {
                     qWarning() << "OAuth2::link: Reply server failed to start listening on any port out of " << ports;
-                    emit linkingFailed();
+                    emit linkingFailedHard();
                     return;
                 }
             }
@@ -323,7 +323,7 @@ void OAuth2::onVerificationReceived(const QMap<QString, QString> response) {
 
     if (response.contains("error")) {
         qWarning() << "OAuth2::onVerificationReceived: Verification failed:" << response;
-        emit linkingFailed();
+        emit linkingFailedHard();
         updateActivity(Activity::Idle);
         return;
     }
@@ -375,7 +375,7 @@ void OAuth2::onVerificationReceived(const QMap<QString, QString> response) {
             emit linkingSucceeded();
         } else {
             qWarning() << "OAuth2::onVerificationReceived: Access token missing from response for implicit or device flow";
-            emit linkingFailed();
+            emit linkingFailedHard();
         }
         updateActivity(Activity::Idle);
     } else {
@@ -427,7 +427,7 @@ void OAuth2::onTokenReplyFinished() {
             emit linkingSucceeded();
         } else {
             qWarning() << "OAuth2::onTokenReplyFinished: Access token missing from response";
-            emit linkingFailed();
+            emit linkingFailedHard();
         }
     }
     tokenReply->deleteLater();
@@ -447,7 +447,7 @@ void OAuth2::onTokenReplyError(QNetworkReply::NetworkError error) {
 
     setToken(QString());
     setRefreshToken(QString());
-    emit linkingFailed();
+    emit linkingFailedHard();
 }
 
 QByteArray OAuth2::buildRequestBody(const QMap<QString, QString> &parameters) {
@@ -520,12 +520,12 @@ bool OAuth2::refresh() {
 
     if (refreshToken().isEmpty()) {
         qWarning() << "OAuth2::refresh: No refresh token";
-        onRefreshError(QNetworkReply::AuthenticationRequiredError);
+        emit linkingFailedHard();
         return false;
     }
     if (options_.accessTokenUrl.isEmpty()) {
         qWarning() << "OAuth2::refresh: Refresh token URL not set";
-        onRefreshError(QNetworkReply::AuthenticationRequiredError);
+        emit linkingFailedHard();
         return false;
     }
 
@@ -545,14 +545,14 @@ bool OAuth2::refresh() {
     QNetworkReply *refreshReply = manager_->post(refreshRequest, data);
     timedReplies_.add(refreshReply);
     connect(refreshReply, SIGNAL(finished()), this, SLOT(onRefreshFinished()), Qt::QueuedConnection);
-    connect(refreshReply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(onRefreshError(QNetworkReply::NetworkError)), Qt::QueuedConnection);
     return true;
 }
 
 void OAuth2::onRefreshFinished() {
     QNetworkReply *refreshReply = qobject_cast<QNetworkReply *>(sender());
 
-    if (refreshReply->error() == QNetworkReply::NoError) {
+    auto error = refreshReply->error();
+    if(error == QNetworkReply::NoError) {
         QByteArray reply = refreshReply->readAll();
         QVariantMap tokens = parseJsonResponse(reply);
         setToken(tokens.value(OAUTH2_ACCESS_TOKEN).toString());
@@ -564,25 +564,38 @@ void OAuth2::onRefreshFinished() {
         else {
             qDebug() << "No new refresh token. Keep the old one.";
         }
-        timedReplies_.remove(refreshReply);
         setLinked(true);
         emit linkingSucceeded();
-        emit refreshFinished(QNetworkReply::NoError);
         qDebug() << "New token expires in" << expires() << "seconds";
-    } else {
-        emit linkingFailed();
-        qDebug() << "OAuth2::onRefreshFinished: Error" << (int)refreshReply->error() << refreshReply->errorString();
     }
+    else {
+        if(error <= QNetworkReply::UnknownNetworkError) {
+            emit linkingFailedSoft();
+        }
+
+    }
+    switch (error) {
+        // no issues, we got refreshed tokens!
+        case QNetworkReply::ConnectionRefusedError:
+        case QNetworkReply::RemoteHostClosedError:
+        case QNetworkReply::HostNotFoundError:
+        case QNetworkReply::TimeoutError:
+        case QNetworkReply::OperationCanceledError:
+        case QNetworkReply::SslHandshakeFailedError:
+        case QNetworkReply::TemporaryNetworkFailureError:
+        case QNetworkReply::NetworkSessionFailedError:
+        case QNetworkReply::BackgroundRequestNotAllowedError:
+        case QNetworkReply::TooManyRedirectsError:
+        case QNetworkReply::InsecureRedirectError:
+        case QNetworkReply::UnknownNetworkError: {
+
+
+        }
+    }
+
+    timedReplies_.remove(refreshReply);
     refreshReply->deleteLater();
     updateActivity(Activity::Idle);
-}
-
-void OAuth2::onRefreshError(QNetworkReply::NetworkError error) {
-    QNetworkReply *refreshReply = qobject_cast<QNetworkReply *>(sender());
-    qWarning() << "OAuth2::onRefreshError: " << error;
-    unlink();
-    timedReplies_.remove(refreshReply);
-    emit refreshFinished(error);
 }
 
 void OAuth2::onDeviceAuthReplyFinished()
@@ -627,7 +640,7 @@ void OAuth2::onDeviceAuthReplyFinished()
             int expiresIn = params[OAUTH2_EXPIRES_IN].toInt(&ok);
             if (!ok) {
                 qWarning() << "OAuth2::startPollServer: No expired_in parameter";
-                emit linkingFailed();
+                emit linkingFailedHard();
                 return;
             }
 
@@ -636,7 +649,7 @@ void OAuth2::onDeviceAuthReplyFinished()
             startPollServer(params, expiresIn);
         } else {
             qWarning() << "OAuth2::onDeviceAuthReplyFinished: Mandatory parameters missing from response";
-            emit linkingFailed();
+            emit linkingFailedHard();
             updateActivity(Activity::Idle);
         }
     }
@@ -647,7 +660,7 @@ void OAuth2::serverHasClosed(bool paramsfound)
 {
     if ( !paramsfound ) {
         // server has probably timed out after receiving first response
-        emit linkingFailed();
+        emit linkingFailedHard();
     }
     // poll server is not re-used for later auth requests
     setPollServer(NULL);

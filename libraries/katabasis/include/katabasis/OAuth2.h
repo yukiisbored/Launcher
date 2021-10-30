@@ -130,9 +130,6 @@ public slots:
     void serverHasClosed(bool paramsfound = false);
 
 signals:
-    /// Emitted when a token refresh has been completed or failed.
-    void refreshFinished(QNetworkReply::NetworkError error);
-
     /// Emitted when client needs to open a web browser window, with the given URL.
     void openBrowser(const QUrl &url);
 
@@ -145,8 +142,11 @@ signals:
     /// Emitted when authentication/deauthentication succeeded.
     void linkingSucceeded();
 
-    /// Emitted when authentication/deauthentication failed.
-    void linkingFailed();
+    /// Emitted when we failed to authenticate and we are sure the tokens are invalid
+    void linkingFailedHard();
+
+    /// Emitted when we failed to authenticate and the tokens may (still) be valid
+    void linkingFailedSoft();
 
     void activityChanged(Activity activity);
 
@@ -163,9 +163,6 @@ protected slots:
 
     /// Handle completion of a refresh request.
     virtual void onRefreshFinished();
-
-    /// Handle failure of a refresh request.
-    virtual void onRefreshError(QNetworkReply::NetworkError error);
 
     /// Handle completion of a Device Authorization Request
     virtual void onDeviceAuthReplyFinished();

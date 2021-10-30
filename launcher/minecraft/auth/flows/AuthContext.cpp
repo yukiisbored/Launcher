@@ -69,7 +69,8 @@ void AuthContext::initMSA() {
     m_oauth2 = new OAuth2(opts, m_data->msaToken, this, &ENV.qnam());
     m_oauth2->setGrantFlow(Katabasis::OAuth2::GrantFlowDevice);
 
-    connect(m_oauth2, &OAuth2::linkingFailed, this, &AuthContext::onOAuthLinkingFailed);
+    connect(m_oauth2, &OAuth2::linkingFailedHard, this, &AuthContext::onOAuthLinkingFailedHard);
+    connect(m_oauth2, &OAuth2::linkingFailedSoft, this, &AuthContext::onOAuthLinkingFailedSoft);
     connect(m_oauth2, &OAuth2::linkingSucceeded, this, &AuthContext::onOAuthLinkingSucceeded);
     connect(m_oauth2, &OAuth2::showVerificationUriAndCode, this, &AuthContext::showVerificationUriAndCode);
     connect(m_oauth2, &OAuth2::activityChanged, this, &AuthContext::onOAuthActivityChanged);
@@ -113,11 +114,19 @@ bool AuthContext::signOut() {
 }
 */
 
-void AuthContext::onOAuthLinkingFailed() {
+void AuthContext::onOAuthLinkingFailedHard() {
     emit hideVerificationUriAndCode();
     finishActivity();
     changeState(STATE_FAILED_HARD, tr("Microsoft user authentication failed."));
 }
+
+void AuthContext::onOAuthLinkingFailedSoft() {
+    emit hideVerificationUriAndCode();
+    finishActivity();
+    changeState(STATE_FAILED_SOFT, tr("Couldn't establish connection to Microsoft authentication server."));
+    // TODO: here, we could still continue looking at the other tokens and see if we can talk to the services with them
+}
+
 
 void AuthContext::onOAuthLinkingSucceeded() {
     emit hideVerificationUriAndCode();

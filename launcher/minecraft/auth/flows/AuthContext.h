@@ -36,7 +36,8 @@ signals:
 private slots:
 // OAuth-specific callbacks
     void onOAuthLinkingSucceeded();
-    void onOAuthLinkingFailed();
+    void onOAuthLinkingFailedHard();
+    void onOAuthLinkingFailedSoft();
 
     void onOAuthActivityChanged(Katabasis::Activity activity);
 
