@@ -28,6 +28,8 @@
 #define S_IWOTH (S_IWGRP >> 3) /* Write by others.  */
 #define S_IXOTH (S_IXGRP >> 3) /* Execute by others.  */
 #endif
+
+#if false
 static QFile::Permissions unixModeToPermissions(const int mode)
 {
     QFile::Permissions perms;
@@ -74,6 +76,7 @@ static QFile::Permissions unixModeToPermissions(const int mode)
 }
 
 static const QLatin1String liveCheckFile("live.check");
+#endif
 
 UpdateController::UpdateController(QWidget * parent, const QString& root, const QString updateFilesDir, GoUpdate::OperationList operations)
 {
@@ -86,6 +89,7 @@ UpdateController::UpdateController(QWidget * parent, const QString& root, const 
 
 void UpdateController::installUpdates()
 {
+#if false
     qint64 pid = -1;
     QStringList args;
     bool started = false;
@@ -97,8 +101,6 @@ void UpdateController::installUpdates()
     QString finishCmd = FS::PathCombine(m_root, BuildConfig.LAUNCHER_NAME);
 #elif defined Q_OS_MAC
     QString finishCmd = QApplication::applicationFilePath();
-#else
-#error Unsupported operating system.
 #endif
 
     QString backupPath = FS::PathCombine(m_root, "update", "backup");
@@ -355,6 +357,7 @@ void UpdateController::installUpdates()
         qApp->quit();
         return;
     }
+#endif
 }
 
 void UpdateController::fail()
