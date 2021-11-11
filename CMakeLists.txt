@@ -135,92 +135,13 @@ add_subdirectory(branding)
 
 ####################################### Install layout #######################################
 
-# How to install the build results
-set(Launcher_LAYOUT "auto" CACHE STRING "The layout for the launcher installation (auto, win-bundle, lin-nodeps, mac-bundle)")
-set_property(CACHE Launcher_LAYOUT PROPERTY STRINGS auto win-bundle lin-nodeps mac-bundle)
+set(BINARY_DEST_DIR "bin")
+set(LIBRARY_DEST_DIR "lib")
+set(JARS_DEST_DIR "share/bgl/jars")
 
-if(Launcher_LAYOUT STREQUAL "auto")
-    if(UNIX AND APPLE)
-        set(Launcher_LAYOUT_REAL "mac-bundle")
-    elseif(UNIX)
-        set(Launcher_LAYOUT_REAL "lin-nodeps")
-    elseif(WIN32)
-        set(Launcher_LAYOUT_REAL "win-bundle")
-    else()
-        message(FATAL_ERROR "Cannot choose a sensible install layout for your platform.")
-    endif()
-else()
-    set(Launcher_LAYOUT_REAL ${Launcher_LAYOUT})
-endif()
+set(Launcher_APP_BINARY_DEFS "-DMULTIMC_JARS_LOCATION=${CMAKE_INSTALL_PREFIX}/${JARS_DEST_DIR}")
 
-if(Launcher_LAYOUT_REAL STREQUAL "mac-bundle")
-    set(BINARY_DEST_DIR "${Launcher_Name}.app/Contents/MacOS")
-    set(LIBRARY_DEST_DIR "${Launcher_Name}.app/Contents/MacOS")
-    set(PLUGIN_DEST_DIR "${Launcher_Name}.app/Contents/MacOS")
-    set(RESOURCES_DEST_DIR "${Launcher_Name}.app/Contents/Resources")
-    set(JARS_DEST_DIR "${Launcher_Name}.app/Contents/MacOS/jars")
-
-    set(BUNDLE_DEST_DIR ".")
-
-    # Apps to bundle
-    set(APPS "\${CMAKE_INSTALL_PREFIX}/${Launcher_Name}.app")
-
-    # Mac bundle settings
-    set(MACOSX_BUNDLE_BUNDLE_NAME "${Launcher_Name}")
-    set(MACOSX_BUNDLE_INFO_STRING "${Launcher_Name}:  Minecraft launcher and management utility.")
-    set(MACOSX_BUNDLE_GUI_IDENTIFIER "org.multimc.${Launcher_Name}")
-    set(MACOSX_BUNDLE_BUNDLE_VERSION "${Launcher_VERSION_MAJOR}.${Launcher_VERSION_MINOR}.${Launcher_VERSION_HOTFIX}.${Launcher_VERSION_BUILD}")
-    set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${Launcher_VERSION_MAJOR}.${Launcher_VERSION_MINOR}.${Launcher_VERSION_HOTFIX}.${Launcher_VERSION_BUILD}")
-    set(MACOSX_BUNDLE_LONG_VERSION_STRING "${Launcher_VERSION_MAJOR}.${Launcher_VERSION_MINOR}.${Launcher_VERSION_HOTFIX}.${Launcher_VERSION_BUILD}")
-    set(MACOSX_BUNDLE_ICON_FILE ${Launcher_Name}.icns)
-    set(MACOSX_BUNDLE_COPYRIGHT "Copyright 2015-2021 ${Launcher_Copyright}")
-
-    # directories to look for dependencies
-    set(DIRS ${QT_LIBS_DIR} ${QT_LIBEXECS_DIR} ${CMAKE_LIBRARY_OUTPUT_DIRECTORY} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-
-    # install as bundle
-    set(INSTALL_BUNDLE "full")
-
-    # Add the icon
-    install(FILES ${Launcher_Branding_ICNS} DESTINATION ${RESOURCES_DEST_DIR})
-
-elseif(Launcher_LAYOUT_REAL STREQUAL "lin-nodeps")
-    set(BINARY_DEST_DIR "bin")
-    set(LIBRARY_DEST_DIR "bin")
-    set(PLUGIN_DEST_DIR "plugins")
-    set(BUNDLE_DEST_DIR ".")
-    set(RESOURCES_DEST_DIR ".")
-    set(JARS_DEST_DIR "bin/jars")
-
-    # install as bundle with no dependencies included
-    set(INSTALL_BUNDLE "nodeps")
-
-    # Set RPATH
-    SET(Launcher_BINARY_RPATH "$ORIGIN/")
-
-    # Install basic runner script
-    configure_file(launcher/Launcher.in "${CMAKE_CURRENT_BINARY_DIR}/LauncherScript" @ONLY)
-    install(PROGRAMS "${CMAKE_CURRENT_BINARY_DIR}/LauncherScript" DESTINATION ${BUNDLE_DEST_DIR} RENAME ${Launcher_Name})
-
-elseif(Launcher_LAYOUT_REAL STREQUAL "win-bundle")
-    set(BINARY_DEST_DIR ".")
-    set(LIBRARY_DEST_DIR ".")
-    set(PLUGIN_DEST_DIR ".")
-    set(BUNDLE_DEST_DIR ".")
-    set(RESOURCES_DEST_DIR ".")
-    set(JARS_DEST_DIR "jars")
-
-    # Apps to bundle
-    set(APPS "\${CMAKE_INSTALL_PREFIX}/${Launcher_Name}.exe")
-
-    # directories to look for dependencies
-    set(DIRS ${QT_LIBS_DIR} ${QT_LIBEXECS_DIR} ${CMAKE_LIBRARY_OUTPUT_DIRECTORY} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-
-    # install as bundle
-    set(INSTALL_BUNDLE "full")
-else()
-    message(FATAL_ERROR "No sensible install layout set.")
-endif()
+set(INSTALL_BUNDLE "nodeps")
 
 ################################ Included Libs ################################
 
