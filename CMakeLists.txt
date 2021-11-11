@@ -129,13 +129,9 @@ if (Qt5_POSITION_INDEPENDENT_CODE)
     SET(CMAKE_POSITION_INDEPENDENT_CODE ON)
 endif()
 
-####################################### Secrets #######################################
+####################################### Branding #######################################
 
-if(Launcher_EMBED_SECRETS)
-    add_subdirectory(secrets)
-else()
-    add_subdirectory(notsecrets)
-endif()
+add_subdirectory(branding)
 
 ####################################### Install layout #######################################
 
