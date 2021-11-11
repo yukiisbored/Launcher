@@ -308,14 +308,13 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
     }
     else
     {
-#if defined(Q_OS_MAC)
-        QDir foo(FS::PathCombine(applicationDirPath(), "../../Data"));
-        dataPath = foo.absolutePath();
-        adjustedBy += "Fallback to special Mac location " + dataPath;
-#else
-        dataPath = applicationDirPath();
-        adjustedBy += "Fallback to binary path " + dataPath;
-#endif
+        QString xdgDataHome = QFile::decodeName(qgetenv("XDG_DATA_HOME"));
+
+        if (xdgDataHome.isEmpty())
+           xdgDataHome = QDir::homePath() + QLatin1String("/.local/share");
+
+        dataPath = xdgDataHome + "/" + BuildConfig.LAUNCHER_NAME;
+        adjustedBy += "XDG standard " + dataPath;
     }
 
     if (!FS::ensureFolderPathExists(dataPath))
