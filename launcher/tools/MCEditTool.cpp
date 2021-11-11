@@ -61,7 +61,6 @@ QString MCEditTool::getProgramPath()
     {
         return mceditDir.absoluteFilePath("mcedit.py");
     }
-    return QString();
 #elif defined(Q_OS_WIN32)
     if (mceditDir.exists("mcedit.exe"))
     {
@@ -71,7 +70,7 @@ QString MCEditTool::getProgramPath()
     {
         return mceditDir.absoluteFilePath("mcedit2.exe");
     }
-    return QString();
 #endif
+    return QString();
 #endif
 }
