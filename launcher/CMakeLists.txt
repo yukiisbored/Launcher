@@ -947,6 +947,12 @@ if(DEFINED Launcher_BINARY_RPATH)
     SET_TARGET_PROPERTIES(${Launcher_Name} PROPERTIES INSTALL_RPATH "${Launcher_BINARY_RPATH}")
 endif()
 
+if(BGL_SYSTEM_LWJGL2_PATH)
+    message(STATUS "System LWJGL 2 path: ${BGL_SYSTEM_LWJGL2_PATH}")
+    target_compile_definitions(${Launcher_Name} PRIVATE "-DBGL_SYSTEM_LWJGL2_PATH=${BGL_SYSTEM_LWJGL2_PATH}")
+    target_compile_definitions(Launcher_logic PRIVATE "-DBGL_SYSTEM_LWJGL2_PATH=${BGL_SYSTEM_LWJGL2_PATH}")
+endif()
+
 target_compile_definitions(${Launcher_Name} PRIVATE "-DMULTIMC_JARS_LOCATION=${CMAKE_INSTALL_PREFIX}/${JARS_DEST_DIR}")
 target_compile_definitions(Launcher_logic PRIVATE "-DMULTIMC_JARS_LOCATION=${CMAKE_INSTALL_PREFIX}/${JARS_DEST_DIR}")
 
