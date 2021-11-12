@@ -90,6 +90,9 @@ set(Launcher_DISCORD_URL "" CACHE STRING "URL for the Discord guild.")
 # Subreddit URL
 set(Launcher_SUBREDDIT_URL "" CACHE STRING "URL for the subreddit.")
 
+# System LWJGL2 Path
+set(BGL_SYSTEM_LWJGL2_PATH "" CACHE STRING "Location for system installed LWJGL 2 library")
+
 # Use the secrets library or a public stub?
 option(Launcher_EMBED_SECRETS "Determines whether to embed secrets. Secrets are separate and non-public." OFF)
 
@@ -139,9 +142,18 @@ set(BINARY_DEST_DIR "bin")
 set(LIBRARY_DEST_DIR "lib")
 set(JARS_DEST_DIR "share/bgl/jars")
 
-set(Launcher_APP_BINARY_DEFS "-DMULTIMC_JARS_LOCATION=${CMAKE_INSTALL_PREFIX}/${JARS_DEST_DIR}")
-
 set(INSTALL_BUNDLE "nodeps")
+
+####################################### Compile time defs #######################################
+
+if(BGL_SYSTEM_LWJGL2_PATH)
+    message(STATUS "System LWJGL 2 path: ${BGL_SYSTEM_LWJGL2_PATH}")
+    list(APPEND Launcher_APP_BINARY_DEFS "-DBGL_SYSTEM_LWJGL2_PATH=${BGL_SYSTEM_LWJGL2_PATH}")
+endif()
+
+list(APPEND Launcher_APP_BINARY_DEFS "-DMULTIMC_JARS_LOCATION=${CMAKE_INSTALL_PREFIX}/${JARS_DEST_DIR}")
+
+list(JOIN Launcher_APP_BINARY_DEFS " " Launcher_APP_BINARY_DEFS)
 
 ################################ Included Libs ################################
 
