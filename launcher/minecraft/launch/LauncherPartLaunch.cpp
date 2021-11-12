@@ -84,6 +84,8 @@ void LauncherPartLaunch::executeTask()
     {
         args << "-Djava.library.path=" + natPath;
     }
+#elif defined(BGL_SYSTEM_LWJGL2_PATH)
+    args << "-Djava.library.path=" + natPath + ":" + TOSTRING(BGL_SYSTEM_LWJGL2_PATH)
 #else
     args << "-Djava.library.path=" + natPath;
 #endif
