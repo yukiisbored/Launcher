@@ -22,6 +22,9 @@
 #include <QStandardPaths>
 #include "Env.h"
 
+#define STRINGIFY(x) #x
+#define TOSTRING(x) STRINGIFY(x)
+
 LauncherPartLaunch::LauncherPartLaunch(LaunchTask *parent) : LaunchStep(parent)
 {
     connect(&m_process, &LoggedProcess::log, this, &LauncherPartLaunch::logLines);
@@ -85,7 +88,7 @@ void LauncherPartLaunch::executeTask()
         args << "-Djava.library.path=" + natPath;
     }
 #elif defined(BGL_SYSTEM_LWJGL2_PATH)
-    args << "-Djava.library.path=" + natPath + ":" + TOSTRING(BGL_SYSTEM_LWJGL2_PATH)
+    args << "-Djava.library.path=" + QString(TOSTRING(BGL_SYSTEM_LWJGL2_PATH)) + ":" + natPath;
 #else
     args << "-Djava.library.path=" + natPath;
 #endif

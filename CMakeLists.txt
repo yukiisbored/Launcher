@@ -144,17 +144,6 @@ set(JARS_DEST_DIR "share/bgl/jars")
 
 set(INSTALL_BUNDLE "nodeps")
 
-####################################### Compile time defs #######################################
-
-if(BGL_SYSTEM_LWJGL2_PATH)
-    message(STATUS "System LWJGL 2 path: ${BGL_SYSTEM_LWJGL2_PATH}")
-    list(APPEND Launcher_APP_BINARY_DEFS "-DBGL_SYSTEM_LWJGL2_PATH=${BGL_SYSTEM_LWJGL2_PATH}")
-endif()
-
-list(APPEND Launcher_APP_BINARY_DEFS "-DMULTIMC_JARS_LOCATION=${CMAKE_INSTALL_PREFIX}/${JARS_DEST_DIR}")
-
-list(JOIN Launcher_APP_BINARY_DEFS " " Launcher_APP_BINARY_DEFS)
-
 ################################ Included Libs ################################
 
 include(ExternalProject)
