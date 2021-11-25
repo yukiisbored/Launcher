@@ -403,6 +403,22 @@ QList<QString> JavaUtils::FindJavaPaths()
     scanJavaDir("/opt/jdks");
     return javas;
 }
+#elif defined(Q_OS_OPENBSD)
+QList<QString> JavaUtils::FindJavaPaths()
+{
+    qDebug() << "OpenBSD Java detection";
+
+    QList<QString> javas;
+
+    QDirIterator it("/usr/local", { "jdk-*" }, QDir::Dirs);
+    while (it.hasNext())
+    {
+        auto javaHome = it.next();
+        javas.append(FS::PathCombine(javaHome, "bin/java"));
+    }
+
+    return javas;
+}
 #else
 QList<QString> JavaUtils::FindJavaPaths()
 {
