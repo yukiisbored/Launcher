@@ -345,7 +345,7 @@ QJsonObject MojangVersionFormat::libraryToJson(Library *library)
     {
         libRoot.insert("url", library->m_repositoryURL);
     }
-    if (library->isNative())
+    if (library->isNative() && !library->m_isNative)
     {
         QJsonObject nativeList;
         auto iter = library->m_nativeClassifiers.begin();

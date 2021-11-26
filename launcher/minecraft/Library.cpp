@@ -14,6 +14,12 @@ void Library::getApplicableFiles(OpSys system, QStringList& jar, QStringList& na
     bool local = isLocal();
     auto actualPath = [&](QString relPath)
     {
+        if (!m_path.isEmpty())
+        {
+            QFileInfo out(m_path);
+            return out.absoluteFilePath();
+        }
+
         QFileInfo out(FS::PathCombine(storagePrefix(), relPath));
         if(local && !overridePath.isEmpty())
         {
@@ -61,6 +67,12 @@ QList< std::shared_ptr< NetAction > > Library::getDownloads(
         QFileInfo fileinfo(storage);
         QString fileName = fileinfo.fileName();
         auto fullPath = FS::PathCombine(overridePath, fileName);
+
+        if (!m_path.isEmpty())
+        {
+            fullPath = m_path;
+        }
+
         QFileInfo localFileInfo(fullPath);
         if(!localFileInfo.exists())
         {
@@ -221,7 +233,7 @@ bool Library::isActive() const
     }
     if (isNative())
     {
-        result = result && m_nativeClassifiers.contains(currentSystem);
+        result = result && (m_nativeClassifiers.contains(currentSystem) || m_isNative);
     }
     return result;
 }
