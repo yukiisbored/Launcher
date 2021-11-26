@@ -13,6 +13,14 @@ static void readString(const QJsonObject &root, const QString &key, QString &var
     }
 }
 
+static void readBoolean(const QJsonObject &root, const QString &key, bool &variable)
+{
+    if (root.contains(key))
+    {
+        variable = requireBoolean(root.value(key));
+    }
+}
+
 LibraryPtr OneSixVersionFormat::libraryFromJson(ProblemContainer & problems, const QJsonObject &libObj, const QString &filename)
 {
     LibraryPtr out = MojangVersionFormat::libraryFromJson(problems, libObj, filename);
@@ -21,6 +29,8 @@ LibraryPtr OneSixVersionFormat::libraryFromJson(ProblemContainer & problems, con
     readString(libObj, "MMC-absoluteUrl", out->m_absoluteURL);
     readString(libObj, "MMC-filename", out->m_filename);
     readString(libObj, "MMC-displayname", out->m_displayname);
+    readString(libObj, "BGL-path", out->m_path);
+    readBoolean(libObj, "BGL-native", out->m_isNative);
     return out;
 }
 
@@ -35,6 +45,10 @@ QJsonObject OneSixVersionFormat::libraryToJson(Library *library)
         libRoot.insert("MMC-filename", library->m_filename);
     if (library->m_displayname.size())
         libRoot.insert("MMC-displayname", library->m_displayname);
+    if (library->m_path.size())
+        libRoot.insert("BGL-path", library->m_path);
+    if (library->m_isNative)
+        libRoot.insert("BGL-native", library->m_isNative);
     return libRoot;
 }
 

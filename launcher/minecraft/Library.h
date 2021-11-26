@@ -46,6 +46,8 @@ public:
         newlib->m_storagePrefix = base->m_storagePrefix;
         newlib->m_mojangDownloads = base->m_mojangDownloads;
         newlib->m_filename = base->m_filename;
+        newlib->m_path = base->m_path;
+        newlib->m_isNative = base->m_isNative;
         return newlib;
     }
 
@@ -87,7 +89,12 @@ public: /* methods */
     /// Returns true if the library is native
     bool isNative() const
     {
-        return m_nativeClassifiers.size() != 0;
+        return m_nativeClassifiers.size() != 0 || m_isNative;
+    }
+
+    /// Set isNative override
+    void setNative(bool native) {
+        m_isNative = native;
     }
 
     void setStoragePrefix(QString prefix = QString());
@@ -131,6 +138,11 @@ public: /* methods */
     void setHint(const QString &hint)
     {
         m_hint = hint;
+    }
+
+    void setPath(const QString &path)
+    {
+        m_path = path;
     }
 
     /// Set the load rules
@@ -196,6 +208,16 @@ protected: /* data */
      * MultiMC specific, because of FTB.
      */
     QString m_storagePrefix;
+
+    /***
+     * Blockgame extension - path override
+     */
+    QString m_path;
+
+    /***
+     * Blockgame extension - isNative override
+     */
+    bool m_isNative = false;
 
     /// true if the library had an extract/excludes section (even empty)
     bool m_hasExcludes = false;
