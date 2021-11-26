@@ -483,10 +483,38 @@ static bool getTrivialComponentChanges(const ComponentIndex & index, const Requi
                 toAdd.insert(req);
                 break;
             case Decision::VersionNotSame:
+#ifdef BGL_SYSTEM_LWJGL3_PATH
+                if (req.uid == "org.lwjgl3")
+                {
+                    qDebug() << reqStr << "is a different version than required but is a platform-specific override.";
+                    break;
+                }
+#endif
+#ifdef BGL_SYSTEM_LWJGL2_PATH
+                if (req.uid == "org.lwjgl")
+                {
+                    qDebug() << reqStr << "is a different version than required but is a platform-specific override.";
+                    break;
+                }
+#endif
                 qDebug() << reqStr << "already has different version that can be changed.";
                 toChange.insert(req);
                 break;
             case Decision::LockedVersionNotSame:
+#ifdef BGL_SYSTEM_LWJGL3_PATH
+                if (req.uid == "org.lwjgl3")
+                {
+                    qDebug() << reqStr << "is a different version than required but is a platform-specific override.";
+                    break;
+                }
+#endif
+#ifdef BGL_SYSTEM_LWJGL2_PATH
+                if (req.uid == "org.lwjgl")
+                {
+                    qDebug() << reqStr << "is a different version than required but is a platform-specific override.";
+                    break;
+                }
+#endif
                 qDebug() << reqStr << "already has different version that cannot be changed.";
                 succeeded = false;
                 break;

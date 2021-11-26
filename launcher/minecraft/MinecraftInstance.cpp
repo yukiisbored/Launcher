@@ -29,6 +29,10 @@
 #include "minecraft/launch/ScanModFolders.h"
 #include "minecraft/launch/VerifyJavaInstall.h"
 
+#if defined(BGL_SYSTEM_LWJGL2_PATH) || defined(BGL_SYSTEM_LWJGL3_PATH)
+#include "minecraft/launch/PatchLibraries.h"
+#endif
+
 #include "java/JavaUtils.h"
 
 #include "meta/Index.h"
@@ -879,6 +883,17 @@ shared_qobject_ptr<LaunchTask> MinecraftInstance::createLaunchTask(AuthSessionPt
     {
         process->appendStep(new Update(pptr, Net::Mode::Offline));
     }
+
+#if defined(BGL_SYSTEM_LWJGL2_PATH) || defined(BGL_SYSTEM_LWJGL3_PATH)
+    if(session->status != AuthSession::PlayableOffline)
+    {
+        process->appendStep(new PatchLibraries(pptr, Net::Mode::Online, m_components));
+    }
+    else
+    {
+        process->appendStep(new PatchLibraries(pptr, Net::Mode::Offline, m_components));
+    }
+#endif
 
     // if there are any jar mods
     {
