@@ -34,7 +34,6 @@ class BaseDetachedToolFactory;
 class TranslationsModel;
 class ITheme;
 class MCEditTool;
-class GAnalytics;
 
 #if defined(LAUNCHER)
 #undef LAUNCHER
@@ -57,11 +56,6 @@ public:
 public:
     Launcher(int &argc, char **argv);
     virtual ~Launcher();
-
-    GAnalytics *analytics() const
-    {
-        return m_analytics;
-    }
 
     std::shared_ptr<SettingsObject> settings() const
     {
@@ -165,7 +159,6 @@ private slots:
     void messageReceived(const QString & message);
     void controllerSucceeded();
     void controllerFailed(const QString & error);
-    void analyticsSettingChanged(const Setting &setting, QVariant value);
     void setupWizardFinished(int status);
 
 private:
@@ -224,7 +217,6 @@ private:
     // peer launcher instance connector - used to implement single instance launcher and signalling
     LocalPeer * m_peerInstance = nullptr;
 
-    GAnalytics * m_analytics = nullptr;
     SetupWizard * m_setupWizard = nullptr;
 public:
     QString m_instanceIdToLaunch;

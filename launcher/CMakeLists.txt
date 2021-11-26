@@ -610,8 +610,6 @@ SET(LAUNCHER_SOURCES
     # GUI - setup wizard
     setupwizard/SetupWizard.h
     setupwizard/SetupWizard.cpp
-    setupwizard/AnalyticsWizardPage.cpp
-    setupwizard/AnalyticsWizardPage.h
     setupwizard/BaseWizardPage.h
     setupwizard/JavaWizardPage.cpp
     setupwizard/JavaWizardPage.h
@@ -928,7 +926,6 @@ target_link_libraries(Launcher_logic
     hoedown
     Launcher_rainbow
     LocalPeer
-    ganalytics
 )
 
 target_link_libraries(Launcher_logic secrets)

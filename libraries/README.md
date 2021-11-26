@@ -151,14 +151,6 @@ BSD licensed, derived from [QtSingleApplication](https://github.com/qtproject/qt
 
 Changes are made to make the code more generic and useful in less usual conditions.
 
-
-## ganalytics
-A Google Analytics library for Qt.
-
-BSD licensed, derived from [qt-google-analytics](https://github.com/HSAnet/qt-google-analytics).
-
-Modifications include better handling of IP anonymization (can be enabled) and general improvements of the API (application handles persistence and ID generation instead of the library).
-
 ## tomlc99
 A TOML language parser. Used by Forge 1.14+ to store mod metadata.
 
