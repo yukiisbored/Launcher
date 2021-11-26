@@ -395,14 +395,6 @@ public:
 
         mainToolBar->addSeparator();
 
-        actionPatreon = TranslatedAction(MainWindow);
-        actionPatreon->setObjectName(QStringLiteral("actionPatreon"));
-        actionPatreon->setIcon(LAUNCHER->getThemedIcon("patreon"));
-        actionPatreon.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Support %1"));
-        actionPatreon.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Open the %1 Patreon page."));
-        all_actions.append(&actionPatreon);
-        mainToolBar->addAction(actionPatreon);
-
         actionCAT = TranslatedAction(MainWindow);
         actionCAT->setObjectName(QStringLiteral("actionCAT"));
         actionCAT->setCheckable(true);
