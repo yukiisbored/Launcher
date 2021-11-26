@@ -61,8 +61,6 @@
 #include <net/Download.h>
 #include <notifications/NotificationChecker.h>
 #include <tools/BaseProfiler.h>
-#include <updater/DownloadTask.h>
-#include <updater/UpdateChecker.h>
 #include <DesktopServices.h>
 #include "InstanceWindow.h"
 #include "InstancePageProvider.h"
@@ -80,12 +78,10 @@
 #include "dialogs/CustomMessageBox.h"
 #include "dialogs/IconPickerDialog.h"
 #include "dialogs/CopyInstanceDialog.h"
-#include "dialogs/UpdateDialog.h"
 #include "dialogs/EditAccountDialog.h"
 #include "dialogs/NotificationDialog.h"
 #include "dialogs/ExportInstanceDialog.h"
 #include <InstanceImportTask.h>
-#include "UpdateController.h"
 #include "KonamiCode.h"
 #include <InstanceCopyTask.h>
 
@@ -195,7 +191,6 @@ class MainWindow::Ui
 public:
     TranslatedAction actionAddInstance;
     //TranslatedAction actionRefresh;
-    TranslatedAction actionCheckUpdate;
     TranslatedAction actionSettings;
     TranslatedAction actionPatreon;
     TranslatedAction actionManageAccounts;
@@ -378,17 +373,6 @@ public:
         QWidgetAction* helpButtonAction = new QWidgetAction(MainWindow);
         helpButtonAction->setDefaultWidget(helpMenuButton);
         mainToolBar->addAction(helpButtonAction);
-
-        if(BuildConfig.UPDATER_ENABLED)
-        {
-            actionCheckUpdate = TranslatedAction(MainWindow);
-            actionCheckUpdate->setObjectName(QStringLiteral("actionCheckUpdate"));
-            actionCheckUpdate->setIcon(LAUNCHER->getThemedIcon("checkupdate"));
-            actionCheckUpdate.setTextId(QT_TRANSLATE_NOOP("MainWindow", "Update"));
-            actionCheckUpdate.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "Check for new updates for %1."));
-            all_actions.append(&actionCheckUpdate);
-            mainToolBar->addAction(actionCheckUpdate);
-        }
 
         mainToolBar->addSeparator();
 
@@ -750,25 +734,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new MainWindow
     // TODO: refresh accounts here?
     // auto accounts = LAUNCHER->accounts();
 
-    if(BuildConfig.UPDATER_ENABLED)
-    {
-        bool updatesAllowed = LAUNCHER->updatesAreAllowed();
-        updatesAllowedChanged(updatesAllowed);
-
-        // NOTE: calling the operator like that is an ugly hack to appease ancient gcc...
-        connect(ui->actionCheckUpdate.operator->(), &QAction::triggered, this, &MainWindow::checkForUpdates);
-
-        // set up the updater object.
-        auto updater = LAUNCHER->updateChecker();
-        connect(updater.get(), &UpdateChecker::updateAvailable, this, &MainWindow::updateAvailable);
-        connect(updater.get(), &UpdateChecker::noUpdateFound, this, &MainWindow::updateNotAvailable);
-        // if automatic update checks are allowed, start one.
-        if (LAUNCHER->settings()->get("AutoUpdate").toBool() && updatesAllowed)
-        {
-            updater->checkForUpdate(LAUNCHER->settings()->get("UpdateChannel").toString(), false);
-        }
-    }
-
     {
         auto checker = new NotificationChecker();
         checker->setNotificationsUrl(QUrl(BuildConfig.NOTIFICATION_URL));
@@ -1029,15 +994,6 @@ void MainWindow::repopulateAccountsMenu()
     accountMenu->addAction(ui->actionManageAccounts);
 }
 
-void MainWindow::updatesAllowedChanged(bool allowed)
-{
-    if(!BuildConfig.UPDATER_ENABLED)
-    {
-        return;
-    }
-    ui->actionCheckUpdate->setEnabled(allowed);
-}
-
 /*
  * Assumes the sender is a QAction
  */
@@ -1114,32 +1070,6 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *ev)
     return QMainWindow::eventFilter(obj, ev);
 }
 
-void MainWindow::updateAvailable(GoUpdate::Status status)
-{
-    if(!LAUNCHER->updatesAreAllowed())
-    {
-        updateNotAvailable();
-        return;
-    }
-    UpdateDialog dlg(true, this);
-    UpdateAction action = (UpdateAction)dlg.exec();
-    switch (action)
-    {
-    case UPDATE_LATER:
-        qDebug() << "Update will be installed later.";
-        break;
-    case UPDATE_NOW:
-        downloadUpdates(status);
-        break;
-    }
-}
-
-void MainWindow::updateNotAvailable()
-{
-    UpdateDialog dlg(false, this);
-    dlg.exec();
-}
-
 QList<int> stringToIntList(const QString &string)
 {
     QStringList split = string.split(',', QString::SkipEmptyParts);
@@ -1176,40 +1106,6 @@ void MainWindow::notificationsChanged()
         }
     }
     LAUNCHER->settings()->set("ShownNotifications", intListToString(shownNotifications));
-}
-
-void MainWindow::downloadUpdates(GoUpdate::Status status)
-{
-    if(!LAUNCHER->updatesAreAllowed())
-    {
-        return;
-    }
-    qDebug() << "Downloading updates.";
-    ProgressDialog updateDlg(this);
-    status.rootPath = LAUNCHER->root();
-
-    auto dlPath = FS::PathCombine(LAUNCHER->root(), "update", "XXXXXX");
-    if (!FS::ensureFilePathExists(dlPath))
-    {
-        CustomMessageBox::selectable(this, tr("Error"), tr("Couldn't create folder for update downloads:\n%1").arg(dlPath), QMessageBox::Warning)->show();
-    }
-    GoUpdate::DownloadTask updateTask(status, dlPath, &updateDlg);
-    // If the task succeeds, install the updates.
-    if (updateDlg.execWithTask(&updateTask))
-    {
-        /**
-         * NOTE: This disables launching instances until the update either succeeds (and this process exits)
-         * or the update fails (and the control leaves this scope).
-         */
-        LAUNCHER->updateIsRunning(true);
-        UpdateController update(this, LAUNCHER->root(), updateTask.updateFilesDir(), updateTask.operations());
-        update.installUpdates();
-        LAUNCHER->updateIsRunning(false);
-    }
-    else
-    {
-        CustomMessageBox::selectable(this, tr("Error"), updateTask.failReason(), QMessageBox::Warning)->show();
-    }
 }
 
 void MainWindow::onCatToggled(bool state)
@@ -1505,19 +1401,6 @@ void MainWindow::on_actionConfig_Folder_triggered()
     {
         QString str = m_selectedInstance->instanceConfigFolder();
         DesktopServices::openDirectory(QDir(str).absolutePath());
-    }
-}
-
-void MainWindow::checkForUpdates()
-{
-    if(BuildConfig.UPDATER_ENABLED)
-    {
-        auto updater = LAUNCHER->updateChecker();
-        updater->checkForUpdate(LAUNCHER->settings()->get("UpdateChannel").toString(), true);
-    }
-    else
-    {
-        qWarning() << "Updater not set up. Cannot check for updates.";
     }
 }
 

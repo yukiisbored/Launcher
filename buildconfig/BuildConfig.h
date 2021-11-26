@@ -30,14 +30,8 @@ public:
      */
     QString VERSION_CHANNEL;
 
-    bool UPDATER_ENABLED = false;
-
     /// A short string identifying this build's platform. For example, "lin64" or "win32".
     QString BUILD_PLATFORM;
-
-    /// URL for the updater's channel
-    QString UPDATER_BASE;
-
 
     /// User-Agent to use.
     QString USER_AGENT;

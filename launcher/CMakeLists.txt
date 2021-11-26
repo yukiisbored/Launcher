@@ -146,28 +146,6 @@ set(LAUNCH_SOURCES
     launch/LogModel.h
 )
 
-# Old update system
-set(UPDATE_SOURCES
-    updater/GoUpdate.h
-    updater/GoUpdate.cpp
-    updater/UpdateChecker.h
-    updater/UpdateChecker.cpp
-    updater/DownloadTask.h
-    updater/DownloadTask.cpp
-)
-
-add_unit_test(UpdateChecker
-    SOURCES updater/UpdateChecker_test.cpp
-    LIBS Launcher_logic
-    DATA updater/testdata
-    )
-
-add_unit_test(DownloadTask
-    SOURCES updater/DownloadTask_test.cpp
-    LIBS Launcher_logic
-    DATA updater/testdata
-    )
-
 # Rarely used notifications
 set(NOTIFICATIONS_SOURCES
     # Notifications - short warning messages
@@ -536,7 +514,6 @@ set(LOGIC_SOURCES
     ${PATHMATCHER_SOURCES}
     ${NET_SOURCES}
     ${LAUNCH_SOURCES}
-    ${UPDATE_SOURCES}
     ${NOTIFICATIONS_SOURCES}
     ${STATUS_SOURCES}
     ${MINECRAFT_SOURCES}
@@ -559,8 +536,6 @@ SET(LAUNCHER_SOURCES
     # Application base
     Launcher.h
     Launcher.cpp
-    UpdateController.cpp
-    UpdateController.h
 
     # GUI - general utilities
     DesktopServices.h
@@ -749,8 +724,6 @@ SET(LAUNCHER_SOURCES
     pagedialog/PageDialog.h
     dialogs/ProgressDialog.cpp
     dialogs/ProgressDialog.h
-    dialogs/UpdateDialog.cpp
-    dialogs/UpdateDialog.h
     dialogs/VersionSelectDialog.cpp
     dialogs/VersionSelectDialog.h
     dialogs/SkinUploadDialog.cpp
@@ -858,7 +831,6 @@ SET(LAUNCHER_UIS
     dialogs/ExportInstanceDialog.ui
     dialogs/LoginDialog.ui
     dialogs/MSALoginDialog.ui
-    dialogs/UpdateDialog.ui
     dialogs/NotificationDialog.ui
     dialogs/SkinUploadDialog.ui
 

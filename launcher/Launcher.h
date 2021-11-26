@@ -7,7 +7,6 @@
 #include <QIcon>
 #include <QDateTime>
 #include <QUrl>
-#include <updater/GoUpdate.h>
 
 #include <BaseInstance.h>
 
@@ -28,7 +27,6 @@ class AccountList;
 class IconList;
 class QNetworkAccessManager;
 class JavaInstallList;
-class UpdateChecker;
 class BaseProfilerFactory;
 class BaseDetachedToolFactory;
 class TranslationsModel;
@@ -75,12 +73,6 @@ public:
 
     void setApplicationTheme(const QString& name, bool initial);
 
-    // DownloadUpdateTask
-    std::shared_ptr<UpdateChecker> updateChecker()
-    {
-        return m_updateChecker;
-    }
-
     std::shared_ptr<TranslationsModel> translations();
 
     std::shared_ptr<JavaInstallList> javalist();
@@ -120,12 +112,6 @@ public:
         return m_profilers;
     }
 
-    /// this is the root of the 'installation'. Used for automatic updates
-    const QString &root()
-    {
-        return m_rootPath;
-    }
-
     /*!
      * Opens a json file using either a system default editor, or, if not empty, the editor
      * specified in the settings
@@ -135,13 +121,9 @@ public:
     InstanceWindow *showInstanceWindow(InstancePtr instance, QString page = QString());
     MainWindow *showMainWindow(bool minimized = false);
 
-    void updateIsRunning(bool running);
-    bool updatesAreAllowed();
-
     void ShowGlobalSettings(class QWidget * parent, QString open_page = QString());
 
 signals:
-    void updateAllowedChanged(bool status);
     void globalSettingsAboutToOpen();
     void globalSettingsClosed();
 
@@ -180,7 +162,6 @@ private:
     std::shared_ptr<InstanceList> m_instances;
     FolderInstanceProvider * m_instanceFolder = nullptr;
     std::shared_ptr<IconList> m_icons;
-    std::shared_ptr<UpdateChecker> m_updateChecker;
     std::shared_ptr<AccountList> m_accounts;
     std::shared_ptr<JavaInstallList> m_javalist;
     std::shared_ptr<TranslationsModel> m_translations;
@@ -209,7 +190,6 @@ private:
     // main state variables
     size_t m_openWindows = 0;
     size_t m_runningInstances = 0;
-    bool m_updateRunning = false;
 
     // main window, if any
     MainWindow * m_mainWindow = nullptr;

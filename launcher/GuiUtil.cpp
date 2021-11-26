@@ -3,6 +3,7 @@
 #include <QClipboard>
 #include <QApplication>
 #include <QFileDialog>
+#include <QStandardPaths>
 
 #include "dialogs/ProgressDialog.h"
 #include "net/PasteUpload.h"
