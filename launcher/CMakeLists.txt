@@ -175,15 +175,6 @@ set(NOTIFICATIONS_SOURCES
     notifications/NotificationChecker.cpp
 )
 
-# Backend for the news bar... there's usually no news.
-set(NEWS_SOURCES
-    # News System
-    news/NewsChecker.h
-    news/NewsChecker.cpp
-    news/NewsEntry.h
-    news/NewsEntry.cpp
-)
-
 # Icon interface
 set(ICONS_SOURCES
     # Icons System and related code
@@ -547,7 +538,6 @@ set(LOGIC_SOURCES
     ${LAUNCH_SOURCES}
     ${UPDATE_SOURCES}
     ${NOTIFICATIONS_SOURCES}
-    ${NEWS_SOURCES}
     ${STATUS_SOURCES}
     ${MINECRAFT_SOURCES}
     ${SCREENSHOTS_SOURCES}

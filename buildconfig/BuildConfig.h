@@ -61,12 +61,6 @@ public:
     QString VERSION_STR;
 
     /**
-     * This is used to fetch the news RSS feed.
-     * It defaults in CMakeLists.txt to "https://multimc.org/rss.xml"
-     */
-    QString NEWS_RSS_URL;
-
-    /**
      * API key you can get from paste.ee when you register an account
      */
     QString PASTE_EE_KEY;
