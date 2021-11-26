@@ -93,6 +93,9 @@ set(Launcher_SUBREDDIT_URL "" CACHE STRING "URL for the subreddit.")
 # System LWJGL2 Path
 set(BGL_SYSTEM_LWJGL2_PATH "" CACHE STRING "Location for system installed LWJGL 2 library")
 
+# System LWJGL3 Path
+set(BGL_SYSTEM_LWJGL3_PATH "" CACHE STRING "Location for system installed LWJGL 3 library")
+
 # Use the secrets library or a public stub?
 option(Launcher_EMBED_SECRETS "Determines whether to embed secrets. Secrets are separate and non-public." OFF)
 

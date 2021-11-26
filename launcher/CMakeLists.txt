@@ -259,6 +259,8 @@ set(MINECRAFT_SOURCES
     minecraft/launch/MinecraftServerTarget.h
     minecraft/launch/PrintInstanceInfo.cpp
     minecraft/launch/PrintInstanceInfo.h
+    minecraft/launch/PatchLibraries.h
+    minecraft/launch/PatchLibraries.cpp
     minecraft/launch/ReconstructAssets.cpp
     minecraft/launch/ReconstructAssets.h
     minecraft/launch/ScanModFolders.cpp
@@ -945,6 +947,12 @@ if(BGL_SYSTEM_LWJGL2_PATH)
     message(STATUS "System LWJGL 2 path: ${BGL_SYSTEM_LWJGL2_PATH}")
     target_compile_definitions(${Launcher_Name} PRIVATE "-DBGL_SYSTEM_LWJGL2_PATH=${BGL_SYSTEM_LWJGL2_PATH}")
     target_compile_definitions(Launcher_logic PRIVATE "-DBGL_SYSTEM_LWJGL2_PATH=${BGL_SYSTEM_LWJGL2_PATH}")
+endif()
+
+if(BGL_SYSTEM_LWJGL3_PATH)
+    message(STATUS "System LWJGL 3 path: ${BGL_SYSTEM_LWJGL3_PATH}")
+    target_compile_definitions(${Launcher_Name} PRIVATE "-DBGL_SYSTEM_LWJGL3_PATH=${BGL_SYSTEM_LWJGL3_PATH}")
+    target_compile_definitions(Launcher_logic PRIVATE "-DBGL_SYSTEM_LWJGL3_PATH=${BGL_SYSTEM_LWJGL3_PATH}")
 endif()
 
 target_compile_definitions(${Launcher_Name} PRIVATE "-DMULTIMC_JARS_LOCATION=${CMAKE_INSTALL_PREFIX}/${JARS_DEST_DIR}")
