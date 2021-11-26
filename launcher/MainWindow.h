@@ -34,7 +34,6 @@ class QLabel;
 class MinecraftLauncher;
 class BaseProfilerFactory;
 class GroupView;
-class ServerStatus;
 class KonamiCode;
 class InstanceTask;
 
@@ -185,7 +184,6 @@ private:
     InstanceProxyModel *proxymodel = nullptr;
     QLabel *m_statusLeft = nullptr;
     QLabel *m_statusCenter = nullptr;
-    ServerStatus *m_statusRight = nullptr;
     QMenu *accountMenu = nullptr;
     QToolButton *accountMenuButton = nullptr;
     KonamiCode * secretEventFilter = nullptr;
