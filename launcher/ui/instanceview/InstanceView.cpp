@@ -836,12 +836,10 @@ QModelIndex InstanceView::moveCursor(QAbstractItemView::CursorAction cursorActio
         return current;
 
     auto real_group = m_groups[group_index];
-    int beginning_row = 0;
     for(auto group: m_groups)
     {
         if(group == real_group)
             break;
-        beginning_row += group->numRows();
     }
 
     QPair<int, int> pos = cat->positionOf(current);
