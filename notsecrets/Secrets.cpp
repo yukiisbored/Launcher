@@ -3,6 +3,9 @@
 #include <array>
 #include <cstdio>
 
+#define STRINGIFY(x) #x
+#define TOSTRING(x) STRINGIFY(x)
+
 namespace {
 
 /*
@@ -28,7 +31,11 @@ namespace {
  * If you intend to base your own launcher on this code, take care and customize this to obfuscate the client ID, so it cannot be trivially found by casual attackers.
  */
 
+#ifdef BGL_MSA_CLIENT_ID
+QString MSAClientID = TOSTRING(BGL_MSA_CLIENT_ID);
+#else
 QString MSAClientID = "";
+#endif
 }
 
 namespace Secrets {

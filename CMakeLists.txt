@@ -96,8 +96,8 @@ set(BGL_SYSTEM_LWJGL2_PATH "" CACHE STRING "Location for system installed LWJGL 
 # System LWJGL3 Path
 set(BGL_SYSTEM_LWJGL3_PATH "" CACHE STRING "Location for system installed LWJGL 3 library")
 
-# Use the secrets library or a public stub?
-option(Launcher_EMBED_SECRETS "Determines whether to embed secrets. Secrets are separate and non-public." OFF)
+# Microsoft Client ID
+set(BGL_MSA_CLIENT_ID "" CACHE STRING "Microsoft Client ID to support Microsoft/Xbox accounts")
 
 #### Check the current Git commit and branch
 include(GetGitRevisionDescription)
@@ -137,11 +137,7 @@ endif()
 
 ####################################### Secrets #######################################
 
-if(Launcher_EMBED_SECRETS)
-    add_subdirectory(secrets)
-else()
-    add_subdirectory(notsecrets)
-endif()
+add_subdirectory(notsecrets)
 
 ####################################### Install layout #######################################
 

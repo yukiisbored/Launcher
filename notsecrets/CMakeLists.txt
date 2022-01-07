@@ -16,3 +16,9 @@ set(Launcher_Git "https://github.com/MultiMC/Launcher" PARENT_SCOPE)
 set(Launcher_Branding_ICNS "notsecrets/Launcher.icns" PARENT_SCOPE)
 set(Launcher_Branding_WindowsRC "notsecrets/launcher.rc" PARENT_SCOPE)
 set(Launcher_Branding_LogoQRC "notsecrets/logo.qrc" PARENT_SCOPE)
+
+
+if(BGL_MSA_CLIENT_ID)
+    message(STATUS "Microsoft Client ID token is registered")
+    target_compile_definitions(secrets PRIVATE "-DBGL_MSA_CLIENT_ID=${BGL_MSA_CLIENT_ID}")
+endif()
