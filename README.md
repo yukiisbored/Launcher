@@ -1,80 +1,57 @@
-<p align="center">
-  <img src="https://avatars2.githubusercontent.com/u/5411890" alt="MultiMC logo"/>
-</p>
+# Blockgame
 
-MultiMC 5
-=========
+Blockgame is a fork of [MultiMC] which enables Minecraft for
+unsupported (mainly UNIX-like) operating systems.
 
-MultiMC is a custom launcher for Minecraft that focuses on predictability, long term stability and simplicity.
+If you want to play Minecraft on Windows, Linux/amd64, macOS, please
+use [MultiMC] instead of Blockgame.
 
-## Development
-If you want to contribute, talk to us on [Discord](https://discord.gg/multimc) first.
+## Background
 
-While blindly submitting PRs is definitely possible, they're not necessarily going to get accepted.
+Blockgame was made out of necessity due to MultiMC branding guidelines
+which disallow the usage of the MultiMC brand for forks and custom
+builds.
 
-We aren't looking for flashy features, but expanding upon the existing feature set without distruption or endangering future viability of the project is OK.
+As Blockgame is originally the OpenBSD port of MultiMC, a separate
+fork has to be made which strips every single instances of MultiMC
+on top of code that is required to add Minecraft support on OpenBSD.
 
-### Building
-If you want to build MultiMC yourself, check [BUILD.md](BUILD.md) for build instructions.
+In addition, Blockgame removed the bundle system and targets
+POSIX/FHS-style system installations which allows packages/ports to be
+made by separate package/port maintainers.
 
-### Code formatting
-Just follow the existing formatting.
+This is done out of necessity mainly because OpenBSD does not have any
+ABI guarantees and supports a lot more nuanced architectures which the
+maintainer does not have access to.
 
-In general, in order of importance:
-* Make sure your IDE is not messing up line endings or whitespace and avoid using linters.
-* Prefer readability over dogma.
-* Keep to the existing formatting.
-* Indent with 4 space unless it's in a submodule.
-* Keep lists (of arguments, parameters, initializers...) as lists, not paragraphs. It should either read from top to bottom, or left to right. Not both.
+While Blockgame was made mainly to allow OpenBSD users to enjoy
+Minecraft, the project is open to other operating systems /
+architectures, assuming there are people who are willing to maintain
+it.
 
+## Organization
 
-## Translations
-Translations can be done [on crowdin](https://translate.multimc.org). Please avoid making direct pull requests to the translations repository.
+Currently, the project is maintained solely by [Yuki] who is also
+responsible for the OpenBSD port.
 
-## Forking/Redistributing/Custom builds policy
-We keep MultiMC open source because we think it's important to be able to see the source code for a project like this, and we do so using the Apache license.
+The project only follows stable releases of MultiMC and Blockgame's
+patches will be backported for newer releases as they arrive.
 
-Part of the reason for using the Apache license is that we don't want people using the "MultiMC" name when redistributing the project. This means people must take the time to go through the source code and remove all references to "MultiMC", including but not limited to the project icon and the title of windows, (no *MultiMC-fork* in the title).
+This project is done voluntarily and new releases should not be
+expected to arrive as soon as MultiMC made a new release. However, any
+help to backport patches is appreciated.
 
-Apache covers reasonable use for the name - a mention of the project's origins in the About dialog and the license is acceptable. However, it should be abundantly clear that the project is a fork *without* implying that you have our blessing.
+## Contact
 
+For any inquiries, patches, questions, and so-on, please contact
+[Yuki]. Their contact information is available on their
+[website][Yuki].
 
-## License
-Copyright &copy; 2013-2021 MultiMC Contributors
+We accept pull requests but emailing patches is preferred due to how
+the project is organized.
 
-Licensed under the Apache License, Version 2.0 (the "License"); you may not use this program except in compliance with the License. You may obtain a copy of the License at [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0).
+Please do not contact the [MultiMC] project nor their contributors if
+you're using Blockgame.
 
-Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
-
-## Build status
-### Linux (Intel32)
-<a href="https://teamcity.multimc.org/viewType.html?buildTypeId=Launcher_Launcher_Linux32_Build&guest=1">
-Build: <img src="https://teamcity.multimc.org/app/rest/builds/buildType:(id:Launcher_Launcher_Linux32_Build)/statusIcon"/>
-</a>
-<a href="https://teamcity.multimc.org/viewType.html?buildTypeId=Launcher_Launcher_Linux32_Deploy&guest=1">
-Deploy: <img src="https://teamcity.multimc.org/app/rest/builds/buildType:(id:Launcher_Launcher_Linux32_Deploy)/statusIcon"/>
-</a>
-
-### Linux (AMD64)
-<a href="https://teamcity.multimc.org/viewType.html?buildTypeId=Launcher_Launcher_Linux64_Build&guest=1">
-Build: <img src="https://teamcity.multimc.org/app/rest/builds/buildType:(id:Launcher_Launcher_Linux64_Build)/statusIcon"/>
-</a>
-<a href="https://teamcity.multimc.org/viewType.html?buildTypeId=Launcher_Launcher_Linux64_Deploy&guest=1">
-Deploy: <img src="https://teamcity.multimc.org/app/rest/builds/buildType:(id:Launcher_Launcher_Linux64_Deploy)/statusIcon"/>
-</a>
-
-### macOS (AMD64)
-<a href="https://teamcity.multimc.org/viewType.html?buildTypeId=Launcher_Launcher_MacOS_Build&guest=1">
-Build: <img src="https://teamcity.multimc.org/app/rest/builds/buildType:(id:Launcher_Launcher_MacOS_Build)/statusIcon"/>
-</a>
-<a href="https://teamcity.multimc.org/viewType.html?buildTypeId=Launcher_Launcher_MacOS_Deploy&guest=1">
-Deploy: <img src="https://teamcity.multimc.org/app/rest/builds/buildType:(id:Launcher_Launcher_MacOS_Deploy)/statusIcon"/>
-</a>
-
-### Windows (Intel32)
-<a href="https://teamcity.multimc.org/viewType.html?buildTypeId=Launcher_Launcher_Windows_Build&guest=1">
-Build: <img src="https://teamcity.multimc.org/app/rest/builds/buildType:(id:Launcher_Launcher_Windows_Build)/statusIcon"/>
-</a>
-<a href="https://teamcity.multimc.org/viewType.html?buildTypeId=Launcher_Launcher_Windows_Deploy&guest=1">
-Deploy: <img src="https://teamcity.multimc.org/app/rest/builds/buildType:(id:Launcher_Launcher_Windows_Deploy)/statusIcon"/>
-</a>
+[MultiMC]: https://multimc.org
+[Yuki]: https://yukiisbo.red
