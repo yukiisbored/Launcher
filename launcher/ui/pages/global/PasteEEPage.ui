@@ -42,7 +42,7 @@
           <item>
            <widget class="QRadioButton" name="multimcButton">
             <property name="text">
-             <string>MultiMC key - 12MB &amp;upload limit</string>
+             <string>Blockgame key - 12MB &amp;upload limit</string>
             </property>
             <attribute name="buttonGroup">
              <string notr="true">pasteButtonGroup</string>

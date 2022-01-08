@@ -67,10 +67,10 @@ set(Launcher_NOTIFICATION_URL "" CACHE STRING "URL for checking for notification
 set(Launcher_META_URL "https://meta.multimc.org/v1/" CACHE STRING "URL to fetch Launcher's meta files from.")
 
 # paste.ee API key
-set(Launcher_PASTE_EE_API_KEY "utLvciUouSURFzfjPxLBf5W4ISsUX4pwBDF7N1AfZ" CACHE STRING "API key you can get from paste.ee when you register an account")
+set(Launcher_PASTE_EE_API_KEY "uYoTzjDW4SwwOc3ttjSNqh67VuwHZDYrCLdFXrhhz" CACHE STRING "API key you can get from paste.ee when you register an account")
 
 # Imgur API Client ID
-set(Launcher_IMGUR_CLIENT_ID "5b97b0713fba4a3" CACHE STRING "Client ID you can get from Imgur when you register an application")
+set(Launcher_IMGUR_CLIENT_ID "99337d09c06f6e5" CACHE STRING "Client ID you can get from Imgur when you register an application")
 
 # Bug tracker URL
 set(Launcher_BUG_TRACKER_URL "" CACHE STRING "URL for the bug tracker.")
