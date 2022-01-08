@@ -55,8 +55,6 @@
 
 #include "java/JavaUtils.h"
 
-#include "updater/UpdateChecker.h"
-
 #include "tools/JProfiler.h"
 #include "tools/JVisualVM.h"
 #include "tools/MCEditTool.h"
@@ -118,46 +116,6 @@ void appDebugOutput(QtMsgType type, const QMessageLogContext &context, const QSt
     QTextStream(stderr) << out.toLocal8Bit();
     fflush(stderr);
 }
-
-QString getIdealPlatform(QString currentPlatform) {
-    auto info = Sys::getKernelInfo();
-    switch(info.kernelType) {
-        case Sys::KernelType::Darwin: {
-            if(info.kernelMajor >= 17) {
-                // macOS 10.13 or newer
-                return "osx64-5.15.2";
-            }
-            else {
-                // macOS 10.12 or older
-                return "osx64";
-            }
-        }
-        case Sys::KernelType::Windows: {
-            // FIXME: 5.15.2 is not stable on Windows, due to a large number of completely unpredictable and hard to reproduce issues
-            break;
-/*
-            if(info.kernelMajor == 6 && info.kernelMinor >= 1) {
-                // Windows 7
-                return "win32-5.15.2";
-            }
-            else if (info.kernelMajor > 6) {
-                // Above Windows 7
-                return "win32-5.15.2";
-            }
-            else {
-                // Below Windows 7
-                return "win32";
-            }
-*/
-        }
-        case Sys::KernelType::Undetermined:
-        case Sys::KernelType::Linux: {
-            break;
-        }
-    }
-    return currentPlatform;
-}
-
 }
 
 Application::Application(int &argc, char **argv) : QApplication(argc, argv)
@@ -510,19 +468,6 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
 
     // Set up paths
     {
-        // Root path is used for updates.
-#ifdef Q_OS_LINUX
-        QDir foo(FS::PathCombine(binPath, ".."));
-        m_rootPath = foo.absolutePath();
-#elif defined(Q_OS_WIN32)
-        m_rootPath = binPath;
-#elif defined(Q_OS_MAC)
-        QDir foo(FS::PathCombine(binPath, "../.."));
-        m_rootPath = foo.absolutePath();
-        // on macOS, touch the root to force Finder to reload the .app metadata (and fix any icon change issues)
-        FS::updateTimestamp(m_rootPath);
-#endif
-
         qDebug() << BuildConfig.LAUNCHER_DISPLAYNAME << ", (c) 2013-2021 " << BuildConfig.LAUNCHER_COPYRIGHT;
         qDebug() << "Version                    : " << BuildConfig.printableVersionString();
         qDebug() << "Git commit                 : " << BuildConfig.GIT_COMMIT;
@@ -538,7 +483,6 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
             qDebug() << "Work dir                   : " << QDir::currentPath();
         }
         qDebug() << "Binary path                : " << binPath;
-        qDebug() << "Application root path      : " << m_rootPath;
         if(!m_instanceIdToLaunch.isEmpty())
         {
             qDebug() << "ID of instance to launch   : " << m_instanceIdToLaunch;
@@ -574,9 +518,6 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
     // Initialize application settings
     {
         m_settings.reset(new INISettingsObject(BuildConfig.LAUNCHER_CONFIGFILE, this));
-        // Updates
-        m_settings->registerSetting("UpdateChannel", BuildConfig.VERSION_CHANNEL);
-        m_settings->registerSetting("AutoUpdate", true);
 
         // Theming
         m_settings->registerSetting("IconTheme", QString("multimc"));
@@ -696,8 +637,6 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
 
         m_settings->registerSetting("NewInstanceGeometry", "");
 
-        m_settings->registerSetting("UpdateDialogGeometry", "");
-
         // paste.ee API key
         m_settings->registerSetting("PasteEEAPIKey", "multimc");
 
@@ -748,16 +687,6 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
         m_translations->selectLanguage(bcp47Name);
         qDebug() << "Your language is" << bcp47Name;
         qDebug() << "<> Translations loaded.";
-    }
-
-    // initialize the updater
-    if(BuildConfig.UPDATER_ENABLED)
-    {
-        auto platform = getIdealPlatform(BuildConfig.BUILD_PLATFORM);
-        auto channelUrl = BuildConfig.UPDATER_BASE + platform + "/channels.json";
-        qDebug() << "Initializing updater with platform: " << platform << " -- " << channelUrl;
-        m_updateChecker.reset(new UpdateChecker(m_network, channelUrl, BuildConfig.VERSION_CHANNEL, BuildConfig.VERSION_BUILD));
-        qDebug() << "<> Updater started.";
     }
 
     // Instance icons
@@ -1242,11 +1171,7 @@ bool Application::launch(
         MinecraftServerTargetPtr serverToJoin,
         MinecraftAccountPtr accountToUse
 ) {
-    if(m_updateRunning)
-    {
-        qDebug() << "Cannot launch instances while an update is running. Please try again when updates are completed.";
-    }
-    else if(instance->canLaunch())
+    if(instance->canLaunch())
     {
         auto & extras = m_instanceExtras[instance->id()];
         auto & window = extras.window;
@@ -1311,10 +1236,6 @@ bool Application::kill(InstancePtr instance)
 void Application::addRunningInstance()
 {
     m_runningInstances ++;
-    if(m_runningInstances == 1)
-    {
-        emit updateAllowedChanged(false);
-    }
 }
 
 void Application::subRunningInstance()
@@ -1325,27 +1246,12 @@ void Application::subRunningInstance()
         return;
     }
     m_runningInstances --;
-    if(m_runningInstances == 0)
-    {
-        emit updateAllowedChanged(true);
-    }
 }
 
 bool Application::shouldExitNow() const
 {
     return m_runningInstances == 0 && m_openWindows == 0;
 }
-
-bool Application::updatesAreAllowed()
-{
-    return m_runningInstances == 0;
-}
-
-void Application::updateIsRunning(bool running)
-{
-    m_updateRunning = running;
-}
-
 
 void Application::controllerSucceeded()
 {
@@ -1432,7 +1338,6 @@ MainWindow* Application::showMainWindow(bool minimized)
         }
 
         m_mainWindow->checkInstancePathForProblems();
-        connect(this, &Application::updateAllowedChanged, m_mainWindow, &MainWindow::updatesAllowedChanged);
         connect(m_mainWindow, &MainWindow::isClosing, this, &Application::on_windowClose);
         m_openWindows++;
     }

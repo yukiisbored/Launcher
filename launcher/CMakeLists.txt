@@ -148,28 +148,6 @@ set(LAUNCH_SOURCES
     launch/LogModel.h
 )
 
-# Old update system
-set(UPDATE_SOURCES
-    updater/GoUpdate.h
-    updater/GoUpdate.cpp
-    updater/UpdateChecker.h
-    updater/UpdateChecker.cpp
-    updater/DownloadTask.h
-    updater/DownloadTask.cpp
-)
-
-add_unit_test(UpdateChecker
-    SOURCES updater/UpdateChecker_test.cpp
-    LIBS Launcher_logic
-    DATA updater/testdata
-    )
-
-add_unit_test(DownloadTask
-    SOURCES updater/DownloadTask_test.cpp
-    LIBS Launcher_logic
-    DATA updater/testdata
-    )
-
 # Rarely used notifications
 set(NOTIFICATIONS_SOURCES
     # Notifications - short warning messages
@@ -554,7 +532,6 @@ set(LOGIC_SOURCES
     ${PATHMATCHER_SOURCES}
     ${NET_SOURCES}
     ${LAUNCH_SOURCES}
-    ${UPDATE_SOURCES}
     ${NOTIFICATIONS_SOURCES}
     ${NEWS_SOURCES}
     ${MINECRAFT_SOURCES}
@@ -577,8 +554,6 @@ SET(LAUNCHER_SOURCES
     # Application base
     Application.h
     Application.cpp
-    UpdateController.cpp
-    UpdateController.h
     ApplicationMessage.h
     ApplicationMessage.cpp
 
@@ -783,8 +758,6 @@ SET(LAUNCHER_SOURCES
     ui/pagedialog/PageDialog.h
     ui/dialogs/ProgressDialog.cpp
     ui/dialogs/ProgressDialog.h
-    ui/dialogs/UpdateDialog.cpp
-    ui/dialogs/UpdateDialog.h
     ui/dialogs/VersionSelectDialog.cpp
     ui/dialogs/VersionSelectDialog.h
     ui/dialogs/SkinUploadDialog.cpp
@@ -877,7 +850,6 @@ qt5_wrap_ui(LAUNCHER_UI
     ui/dialogs/ProgressDialog.ui
     ui/dialogs/NewInstanceDialog.ui
     ui/dialogs/NotificationDialog.ui
-    ui/dialogs/UpdateDialog.ui
     ui/dialogs/NewComponentDialog.ui
     ui/dialogs/ProfileSelectDialog.ui
     ui/dialogs/SkinUploadDialog.ui

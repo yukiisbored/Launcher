@@ -63,9 +63,6 @@ set(Launcher_VERSION_BUILD -1 CACHE STRING "Build number. -1 for no build number
 # Build platform.
 set(Launcher_BUILD_PLATFORM "" CACHE STRING "A short string identifying the platform that this build was built for. Only used by the notification system and to display in the about dialog.")
 
-# Channel list URL
-set(Launcher_UPDATER_BASE "" CACHE STRING "Base URL for the updater.")
-
 # Notification URL
 set(Launcher_NOTIFICATION_URL "" CACHE STRING "URL for checking for notifications.")
 

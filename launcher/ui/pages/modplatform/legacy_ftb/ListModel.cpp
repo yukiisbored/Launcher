@@ -10,6 +10,8 @@
 #include <RWStorage.h>
 
 #include <BuildConfig.h>
+#include <net/HttpMetaCache.h>
+#include <net/NetJob.h>
 
 namespace LegacyFTB {
 

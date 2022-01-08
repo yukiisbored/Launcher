@@ -21,25 +21,15 @@ Config::Config()
     VERSION_MINOR = @Launcher_VERSION_MINOR@;
     VERSION_HOTFIX = @Launcher_VERSION_HOTFIX@;
     VERSION_BUILD = @Launcher_VERSION_BUILD@;
+    VERSION_CHANNEL = QObject::tr("bgl");
 
     BUILD_PLATFORM = "@Launcher_BUILD_PLATFORM@";
-    UPDATER_BASE = "@Launcher_UPDATER_BASE@";
     ANALYTICS_ID = "@Launcher_ANALYTICS_ID@";
     NOTIFICATION_URL = "@Launcher_NOTIFICATION_URL@";
     FULL_VERSION_STR = "@Launcher_VERSION_MAJOR@.@Launcher_VERSION_MINOR@.@Launcher_VERSION_BUILD@";
 
     GIT_COMMIT = "@Launcher_GIT_COMMIT@";
     GIT_REFSPEC = "@Launcher_GIT_REFSPEC@";
-    if(GIT_REFSPEC.startsWith("refs/heads/") && !UPDATER_BASE.isEmpty() && !BUILD_PLATFORM.isEmpty() && VERSION_BUILD >= 0)
-    {
-        VERSION_CHANNEL = GIT_REFSPEC;
-        VERSION_CHANNEL.remove("refs/heads/");
-        UPDATER_ENABLED = true;
-    }
-    else
-    {
-        VERSION_CHANNEL = QObject::tr("custom");
-    }
 
     VERSION_STR = "@Launcher_VERSION_STRING@";
     NEWS_RSS_URL = "@Launcher_NEWS_RSS_URL@";

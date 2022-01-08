@@ -18,6 +18,10 @@
 #include <QString>
 #include <QIcon>
 #include <memory>
+#include <QSortFilterProxyModel>
+#include <QTimer>
+#include <QFileSystemWatcher>
+#include <QIdentityProxyModel>
 
 #include "BasePageContainer.h"
 
