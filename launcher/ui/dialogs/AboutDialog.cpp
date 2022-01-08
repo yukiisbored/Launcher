@@ -28,7 +28,7 @@ namespace {
 // This is a hack, but I can't think of a better way to do this easily without screwing with QTextDocument...
 QString getCreditsHtml(QStringList patrons)
 {
-    QString patronsHeading = QObject::tr("Patrons", "About Credits");
+    QString patronsHeading = QObject::tr("MultiMC's Patrons", "About Credits");
     QString output;
     QTextStream stream(&output);
     stream.setCodec(QTextCodec::codecForName("UTF-8"));
@@ -51,7 +51,7 @@ QString getCreditsHtml(QStringList patrons)
     stream << "<br />\n";
 
     if(!patrons.isEmpty()) {
-        stream << "<h3>" << QObject::tr("Patrons", "About Credits") << "</h3>\n";
+        stream << "<h3>" << QObject::tr("MultiMC's Patrons", "About Credits") << "</h3>\n";
         for (QString patron : patrons)
         {
             stream << "<p>" << patron << "</p>\n";
