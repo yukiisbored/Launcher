@@ -15,10 +15,10 @@ BEGIN
         BEGIN
                 BLOCK "000004b0"
                 BEGIN
-                        VALUE "CompanyName", "MultiMC Contributors"
+                        VALUE "CompanyName", "Blockgame Contributors"
                         VALUE "FileDescription", "A Minecraft Launcher"
                         VALUE "FileVersion", "1.0.0.0"
-                        VALUE "ProductName", "Launcher"
+                        VALUE "ProductName", "Blockgame"
                         VALUE "ProductVersion", "5"
                 END
         END
