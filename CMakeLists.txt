@@ -49,9 +49,6 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Werror=return-type")
 
 ##################################### Set Application options #####################################
 
-######## Set URLs ########
-set(Launcher_NEWS_RSS_URL "https://multimc.org/rss.xml" CACHE STRING "URL to fetch Launcher's news RSS feed from.")
-
 ######## Set version numbers ########
 set(Launcher_VERSION_MAJOR    0)
 set(Launcher_VERSION_MINOR    6)
