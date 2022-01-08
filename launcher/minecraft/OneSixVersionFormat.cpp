@@ -31,6 +31,11 @@ LibraryPtr OneSixVersionFormat::libraryFromJson(ProblemContainer & problems, con
     readString(libObj, "MMC-displayname", out->m_displayname);
     readString(libObj, "BGL-path", out->m_path);
     readBoolean(libObj, "BGL-native", out->m_isNative);
+
+    // Required for OpenBSD games/multimc to Blockgame transition
+    readString(libObj, "MMC-path", out->m_path);
+    readBoolean(libObj, "MMC-native", out->m_isNative);
+
     return out;
 }
 
