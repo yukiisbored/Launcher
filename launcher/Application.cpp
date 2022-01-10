@@ -273,6 +273,10 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
         adjustedBy += "XDG standard " + dataPath;
     }
 
+#ifdef MULTIMC_JARS_LOCATION
+    m_jarsPath = TOSTRING(MULTIMC_JARS_LOCATION);
+#endif
+
     if (!FS::ensureFolderPathExists(dataPath))
     {
         showFatalErrorMessage(
@@ -481,6 +485,7 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
             qDebug() << "Work dir                   : " << QDir::currentPath();
         }
         qDebug() << "Binary path                : " << binPath;
+        qDebug() << "Jars path                  : " << getJarsPath();
         if(!m_instanceIdToLaunch.isEmpty())
         {
             qDebug() << "ID of instance to launch   : " << m_instanceIdToLaunch;
